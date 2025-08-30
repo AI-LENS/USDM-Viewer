@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for USDM Viewer */
+:root {
+  --bg: #0b1020;
+  --panel: #121734;
+  --muted: #8aa2ffb0;
+  --text: #e7ebff;
+  --border: #243070;
+  --chip: #1b2350;
+  --hit: #ffd166;
+  --accent: #6ea8ff;
+  --box: #16204b;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+}
+
+/* Tree view styles */
+.tree-node {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.95rem;
+  line-height: 1.35rem;
+}
+
+.tree-children {
+  margin-left: 1.25rem;
+  border-left: 1px dashed #25337a;
+  padding-left: 0.6rem;
+}
+
+.tree-twisty {
+  width: 1rem;
+  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background: #111742;
+  cursor: pointer;
+  font-size: 0.72rem;
+  user-select: none;
+}
+
+.tree-key {
+  color: #9ec1ff;
+}
+
+.tree-colon {
+  color: #5e76ff;
+}
+
+.tree-value-null {
+  color: #aaa;
+}
+
+.tree-value-number {
+  color: #ffd28b;
+}
+
+.tree-value-boolean {
+  color: #ffb3b3;
+}
+
+.tree-value-string {
+  color: #b4ffb7;
+}
+
+.tree-meta {
+  color: #8aa2ff;
+  opacity: 0.85;
+}
+
+.tree-selected {
+  background: #1a214a;
+}
+
+/* Mindmap styles */
+.mm-box {
+  fill: var(--box);
+  stroke: #34408c;
+  stroke-width: 1;
+}
+
+.mm-text {
+  font: 12px ui-sans-serif, system-ui;
+  fill: #e7ebff;
+}
+
+.mm-key {
+  fill: #9ec1ff;
+}
+
+.mm-val {
+  fill: #b4ffb7;
+}
+
+.mm-meta {
+  fill: #8aa2ff;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--panel);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
