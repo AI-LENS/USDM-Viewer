@@ -47,7 +47,7 @@
     <!-- Main Layout -->
     <div class="flex gap-4 p-4 h-[calc(100vh-80px)]">
       <!-- Sidebar -->
-      <aside class="w-96 bg-base-200 rounded-lg border border-neutral overflow-auto flex flex-col">
+      <aside class="w-96 bg-base-200 rounded-lg border border-neutral overflow-hidden flex flex-col">
         <!-- Filter Section -->
         <div class="p-4 border-b border-neutral">
           <h3 class="font-bold text-secondary mb-3">Filter key study objects</h3>
@@ -119,15 +119,7 @@
             </ul>
           </div>
           
-          <div class="mt-3 p-3 bg-info/10 rounded-lg border border-info/20">
-            <div class="text-xs font-semibold mb-2 text-info">📊 Structure</div>
-            <ul class="text-xs space-y-1 text-base-content/70">
-              <li>• Shows 3 levels at a time</li>
-              <li>• Left-to-right hierarchy</li>
-              <li>• Parent → Child connections</li>
-              <li>• Click deeper levels to explore</li>
-            </ul>
-          </div>
+          
         </div>
       </aside>
 

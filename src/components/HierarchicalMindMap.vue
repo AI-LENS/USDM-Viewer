@@ -70,11 +70,6 @@
             <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
           </pattern>
 
-          <!-- Arrow marker for connections -->
-          <marker id="arrowhead" markerWidth="10" markerHeight="7" 
-                  refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" :fill="theme.primary" />
-          </marker>
           
           <!-- Gradient for connections -->
           <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -104,7 +99,7 @@
               stroke="url(#connectionGradient)"
               stroke-width="2"
               fill="none"
-              marker-end="url(#arrowhead)"
+
               class="connection-line"
             />
           </g>
