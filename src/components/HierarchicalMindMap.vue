@@ -172,41 +172,18 @@
             <!-- Native tooltip -->
             <title>{{ node.label }} — {{ node.typeLabel }}</title>
 
-            <!-- Node Label (Main text) -->
+            <!-- Node Label and Value -->
             <text
               :x="8"
-              :y="18"
+              :y="24"
               :fill="getNodeTextColor(node)"
-              font-size="13"
-              font-weight="bold"
+              font-size="12"
               class="node-label"
             >
-              {{ truncateText(node.label, 18) }}
-            </text>
-            
-            <!-- Node Type for non-primitives (small muted text under label) -->
-            <text
-              v-if="node.type !== 'primitive'"
-              :x="8"
-              :y="34"
-              :fill="'var(--bc)'"
-              font-size="10"
-              class="node-type"
-            >
-              {{ node.typeLabel }}
-            </text>
-            
-            <!-- Node Value Preview (bottom line) -->
-            <text
-              v-if="node.valuePreview && node.type === 'primitive'"
-              :x="10"
-              :y="48"
-              :fill="getValueTextColor(node)"
-              font-size="11"
-              font-weight="600"
-              class="node-value"
-            >
-              {{ truncateText(node.valuePreview, 24) }}
+              <tspan font-weight="600">{{ truncateText(node.label, 12) }}</tspan>
+              <tspan v-if="node.type === 'primitive' && node.valuePreview" dx="4">:</tspan>
+              <tspan v-if="node.type === 'primitive' && node.valuePreview" dx="4" font-weight="normal">{{ truncateText(node.valuePreview, 18) }}</tspan>
+              <tspan v-if="node.type !== 'primitive'" dx="4" font-weight="normal" class="text-opacity-60">{{ node.typeLabel }}</tspan>
             </text>
           </g>
           </g>
@@ -340,11 +317,11 @@ const loadTheme = () => {
 }
 
 // Layout constants
-const LEVEL_WIDTH = 220  // Increased for better text fit
-const NODE_HEIGHT = 60   // Increased height for text
-const NODE_MIN_WIDTH = 180
-const NODE_MAX_WIDTH = 220
-const VERTICAL_SPACING = 70  // Increased spacing
+const LEVEL_WIDTH = 260  // Increased for better text fit
+const NODE_HEIGHT = 36   // Reduced height to be more compact
+const NODE_MIN_WIDTH = 220
+const NODE_MAX_WIDTH = 260
+const VERTICAL_SPACING = 45  // Reduced spacing for compact layout
 const HORIZONTAL_SPACING = 40
 
 // Utility functions
@@ -377,14 +354,8 @@ const getEntriesForNode = (node) => {
 }
 
 const shouldIncludeInMindmap = (key, value) => {
-  if (props.mode === 'nameDescOnly') {
-    const keyLower = String(key).toLowerCase()
-    // Only include name, description, and text fields
-    return keyLower === 'name' || 
-           keyLower === 'description' || 
-           keyLower === 'text'
-  }
-  return true
+  // Only include primitive values (strings, numbers, booleans)
+  return isPrimitive(value) && value !== null
 }
 
 const getNodeType = (value) => {
@@ -412,8 +383,8 @@ const getNodeColor = (node) => {
 
 const getDisplayType = (nodeType, value) => {
   switch (nodeType) {
-    case 'object': return `Object{${Object.keys(value || {}).length}}`
-    case 'array': return `Array[${value?.length || 0}]`
+    case 'object': return `{${Object.keys(value || {}).length}}`
+    case 'array': return `[${value?.length || 0}]`
     case 'primitive': 
       if (typeof value === 'string') return 'string'
       if (typeof value === 'number') return 'number'
@@ -457,11 +428,11 @@ const truncateText = (text, maxLength) => {
 }
 
 const getValuePreview = (value, type) => {
-  if (type === 'primitive') {
+  if (type === 'primitive' && value !== undefined) {
     const str = String(value)
-    return str.length > 20 ? str.substring(0, 20) + '...' : str
+    return str.length > 15 ? str.substring(0, 15) + '...' : str
   }
-  return '' // Don't show preview for objects/arrays as it's in the type label
+  return undefined // Don't show preview for objects/arrays as it's in the type label
 }
 
 // Get current data based on path

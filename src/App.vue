@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-base-100">
+  <div ref="appContainer" class="min-h-screen bg-base-100">
     <!-- Header -->
-    <header class="sticky top-0 z-30 backdrop-blur-sm bg-base-100/90 border-b border-neutral">
+    <header v-if="!isFullscreen" class="sticky top-0 z-30 backdrop-blur-sm bg-base-100/90 border-b border-neutral">
       <div class="navbar px-4">
         <div class="navbar-start">
-          <h1 class="text-xl font-bold text-primary">USDM JSON Subset Viewer</h1>
+          <h1 class="text-xl font-bold text-primary">USDM Viewer</h1>
         </div>
         
         <div class="navbar-center">
@@ -45,9 +45,12 @@
     </header>
 
     <!-- Main Layout -->
-    <div class="flex gap-4 p-4 h-[calc(100vh-80px)]">
+    <div :class="[
+      'flex gap-4 p-4',
+      isFullscreen ? 'h-screen' : 'h-[calc(100vh-80px)]'
+    ]">
       <!-- Sidebar -->
-      <aside class="w-96 bg-base-200 rounded-lg border border-neutral overflow-hidden flex flex-col">
+      <aside v-if="!isFullscreen" class="w-96 bg-base-200 rounded-lg border border-neutral overflow-hidden flex flex-col">
         <!-- Filter Section -->
         <div class="p-4 border-b border-neutral">
           <h3 class="font-bold text-secondary mb-3">Filter key study objects</h3>
@@ -125,8 +128,20 @@
 
       <!-- Main Content -->
       <main class="flex-1 bg-base-200 rounded-lg border border-neutral overflow-hidden flex flex-col">
-        <div class="p-4 border-b border-neutral">
+        <div class="p-4 border-b border-neutral flex justify-between items-center">
           <h2 class="font-bold text-secondary">Viewer</h2>
+          <button 
+            class="btn btn-sm btn-ghost"
+            @click="toggleFullScreen"
+            :title="isFullscreen ? 'Exit Full Screen' : 'Full Screen'"
+          >
+            <svg v-if="isFullscreen" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14h6m0 0v6m0-6l-7 7m17-11h-6m0 0V4m0 6l7-7"/>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+            </svg>
+          </button>
         </div>
 
         <!-- Tree View -->
@@ -160,6 +175,35 @@ const activeTab = ref('tree')
 const keyFilter = ref('')
 const mindmapMode = ref('everything')
 const fileInput = ref(null)
+const isFullscreen = ref(false)
+const appContainer = ref(null)
+
+const toggleFullScreen = async () => {
+  try {
+    if (!isFullscreen.value) {
+      await appContainer.value.requestFullscreen()
+      isFullscreen.value = true
+    } else {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen()
+      }
+      isFullscreen.value = false
+    }
+  } catch (err) {
+    console.error('Error toggling fullscreen:', err)
+  }
+}
+
+// Listen for fullscreen change events
+onMounted(() => {
+  const handleFullscreenChange = () => {
+    isFullscreen.value = !!document.fullscreenElement
+  }
+  document.addEventListener('fullscreenchange', handleFullscreenChange)
+  return () => {
+    document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  }
+})
 
 // Data state
 const rootData = ref(null)
