@@ -354,7 +354,14 @@ const getEntriesForNode = (node) => {
 }
 
 const shouldIncludeInMindmap = (key, value) => {
-  // Only include primitive values (strings, numbers, booleans)
+  if (props.mode === 'nameDescOnly') {
+    const keyLower = String(key).toLowerCase()
+    // Only include name, description, and text fields that are primitive
+    return (keyLower === 'name' || 
+           keyLower === 'description' || 
+           keyLower === 'text') && isPrimitive(value) && value !== null
+  }
+  // For 'everything' mode, include all primitive values
   return isPrimitive(value) && value !== null
 }
 
