@@ -357,12 +357,16 @@ const shouldIncludeInMindmap = (key, value) => {
   if (props.mode === 'nameDescOnly') {
     const keyLower = String(key).toLowerCase()
     // Only include name, description, and text fields that are primitive
-    return (keyLower === 'name' || 
+    const shouldInclude = (keyLower === 'name' || 
            keyLower === 'description' || 
            keyLower === 'text') && isPrimitive(value) && value !== null
+    console.log(`nameDescOnly mode: key=${key}, value=${value}, shouldInclude=${shouldInclude}`)
+    return shouldInclude
   }
   // For 'everything' mode, include all primitive values
-  return isPrimitive(value) && value !== null
+  const shouldInclude = isPrimitive(value) && value !== null
+  console.log(`everything mode: key=${key}, value=${value}, shouldInclude=${shouldInclude}`)
+  return shouldInclude
 }
 
 const getNodeType = (value) => {
@@ -575,8 +579,8 @@ const processCurrentLevel = () => {
           filteredLevel2 = level2Entries.filter(([k, v]) => shouldIncludeInMindmap(k, v))
         }
       } else {
-        // Complete Structure mode - limit for performance
-        filteredLevel2 = level2Entries.slice(0, 8)
+        // Complete Structure mode - show all primitives but limit for performance
+        filteredLevel2 = level2Entries.filter(([k, v]) => shouldIncludeInMindmap(k, v)).slice(0, 8)
       }
       
       let level2Y = currentY
@@ -602,8 +606,8 @@ const processCurrentLevel = () => {
               filteredLevel3 = level3Entries.filter(([k, v]) => shouldIncludeInMindmap(k, v))
             }
           } else {
-            // Complete Structure mode - limit for performance
-            filteredLevel3 = level3Entries.slice(0, 4)
+            // Complete Structure mode - show all primitives but limit for performance
+            filteredLevel3 = level3Entries.filter(([k, v]) => shouldIncludeInMindmap(k, v)).slice(0, 4)
           }
           
           let level3Y = level2Y
