@@ -1,54 +1,70 @@
 <template>
   <div ref="appContainer" class="min-h-screen bg-base-100">
-    <!-- Header -->
-    <header v-if="!isFullscreen" class="sticky top-0 z-30 backdrop-blur-sm bg-base-100/90 border-b border-neutral">
-      <div class="navbar px-4">
-        <div class="navbar-start">
-          <h1 class="text-xl font-bold text-primary">USDM Viewer</h1>
-        </div>
-        
-        <div class="navbar-center">
-          <div class="tabs tabs-boxed bg-base-200">
+    <!-- Repository Manager -->
+    <RepositoryManager 
+      v-if="showRepositoryManager"
+      @close="showRepositoryManager = false"
+      @load-data="handleRepositoryData"
+    />
+
+    <!-- Main Viewer -->
+    <div v-else>
+      <!-- Header -->
+      <header v-if="!isFullscreen" class="sticky top-0 z-30 backdrop-blur-sm bg-base-100/90 border-b border-neutral">
+        <div class="navbar px-4">
+          <div class="navbar-start">
+            <h1 class="text-xl font-bold text-primary">USDM Viewer</h1>
+          </div>
+          
+          <div class="navbar-center">
+            <div class="tabs tabs-boxed bg-base-200">
+              <button 
+                class="tab" 
+                :class="{ 'tab-active': activeTab === 'tree' }"
+                @click="activeTab = 'tree'"
+              >
+                Tree
+              </button>
+              <button 
+                class="tab" 
+                :class="{ 'tab-active': activeTab === 'mindmap' }"
+                @click="activeTab = 'mindmap'"
+              >
+                Mind-map
+              </button>
+            </div>
+          </div>
+          
+          <div class="navbar-end gap-2">
             <button 
-              class="tab" 
-              :class="{ 'tab-active': activeTab === 'tree' }"
-              @click="activeTab = 'tree'"
+              class="btn btn-secondary btn-sm"
+              @click="showRepositoryManager = true"
+              title="Connect to USDM Repository"
             >
-              Tree
+              🌐 Repository
             </button>
-            <button 
-              class="tab" 
-              :class="{ 'tab-active': activeTab === 'mindmap' }"
-              @click="activeTab = 'mindmap'"
-            >
-              Mind-map
+            <label class="btn btn-primary btn-sm">
+              📂 Open JSON
+              <input 
+                ref="fileInput"
+                type="file" 
+                accept=".json,.jsonl,application/json" 
+                class="hidden"
+                @change="handleFileLoad"
+              />
+            </label>
+            <button class="btn btn-outline btn-sm" @click="resetToFull">
+              Reset to full
             </button>
           </div>
         </div>
-        
-        <div class="navbar-end gap-2">
-          <label class="btn btn-primary btn-sm">
-            📂 Open JSON
-            <input 
-              ref="fileInput"
-              type="file" 
-              accept=".json,.jsonl,application/json" 
-              class="hidden"
-              @change="handleFileLoad"
-            />
-          </label>
-          <button class="btn btn-outline btn-sm" @click="resetToFull">
-            Reset to full
-          </button>
-        </div>
-      </div>
-    </header>
+      </header>
 
-    <!-- Main Layout -->
-    <div :class="[
-      'flex gap-4 p-4',
-      isFullscreen ? 'h-screen' : 'h-[calc(100vh-80px)]'
-    ]">
+      <!-- Main Layout -->
+      <div :class="[
+        'flex gap-4 p-4',
+        isFullscreen ? 'h-screen' : 'h-[calc(100vh-80px)]'
+      ]">
       <!-- Sidebar -->
       <aside v-if="!isFullscreen" class="w-96 bg-base-200 rounded-lg border border-neutral overflow-hidden flex flex-col">
         <!-- Filter Section -->
@@ -161,6 +177,7 @@
           />
         </div>
       </main>
+      </div>
     </div>
   </div>
 </template>
@@ -169,6 +186,7 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 import TreeView from './components/TreeView.vue'
 import HierarchicalMindMap from './components/HierarchicalMindMap.vue'
+import RepositoryManager from './components/RepositoryManager.vue'
 
 // Reactive state
 const activeTab = ref('tree')
@@ -177,6 +195,7 @@ const mindmapMode = ref('everything')
 const fileInput = ref(null)
 const isFullscreen = ref(false)
 const appContainer = ref(null)
+const showRepositoryManager = ref(false)
 
 const toggleFullScreen = async () => {
   try {
@@ -352,5 +371,12 @@ const handleNodeSelect = (node) => {
   selectedNode.value = node.value
   // Optionally subset to selected node
   // currentData.value = node.value
+}
+
+// Repository data handling
+const handleRepositoryData = (data) => {
+  rootData.value = data
+  currentData.value = data
+  showRepositoryManager.value = false
 }
 </script>
